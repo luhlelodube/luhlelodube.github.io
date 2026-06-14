@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Luhlelo Dube — CS & Network Automation</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0F1E;
+    --surface: #111827;
+    --card: #1A2744;
+    --border: #1E3A5F;
+    --accent: #00D4FF;
+    --accent-dim: rgba(0,212,255,0.12);
+    --accent-glow: rgba(0,212,255,0.35);
+    --text: #E8F4FD;
+    --muted: #7B9AB8;
+    --white: #ffffff;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 4rem;
+    background: rgba(10,15,30,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 1.15rem; letter-spacing: -0.02em;
+    color: var(--accent); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.875rem;
+    font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%);
+  }
+  .hero-glow {
+    position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,255,0.1) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -55%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; max-width: 760px; }
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--accent); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .hero-eyebrow::before {
+    content: ''; display: block; width: 28px; height: 1px; background: var(--accent);
+  }
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    font-weight: 700; line-height: 1.08; letter-spacing: -0.03em;
+    color: var(--white); margin-bottom: 1.4rem;
+  }
+  h1 span { color: var(--accent); }
+  .terminal-line {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    color: var(--muted); margin-bottom: 2.4rem;
+    min-height: 1.8em;
+  }
+  .terminal-line::before { content: '> '; color: var(--accent); }
+  .cursor {
+    display: inline-block; width: 2px; height: 1.1em;
+    background: var(--accent); vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.75rem 1.8rem; border-radius: 6px; font-size: 0.9rem;
+    font-weight: 600; text-decoration: none; letter-spacing: 0.02em;
+    transition: all 0.22s; cursor: pointer; border: none; display: inline-block;
+  }
+  .btn-primary {
+    background: var(--accent); color: var(--bg);
+  }
+  .btn-primary:hover {
+    background: #33DDFF; box-shadow: 0 0 28px var(--accent-glow);
+  }
+  .btn-outline {
+    background: transparent; color: var(--accent);
+    border: 1.5px solid var(--accent);
+  }
+  .btn-outline:hover { background: var(--accent-dim); }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 4rem; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--accent); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-bottom: 0.7rem;
+    display: flex; align-items: center; gap: 0.7rem;
+  }
+  .section-label::after {
+    content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--accent);
+  }
+  h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    font-weight: 700; letter-spacing: -0.02em;
+    color: var(--white); margin-bottom: 2.5rem;
+  }
+  .divider {
+    width: 100%; height: 1px; background: var(--border);
+    margin: 0 auto;
+  }
+
+  /* ── HERO INTERESTS ── */
+  .hero-interests {
+    display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.6rem;
+  }
+  .interest-pill {
+    font-size: 0.78rem; font-family: 'Inter', sans-serif; font-weight: 500;
+    padding: 0.35rem 0.85rem; border-radius: 999px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent); letter-spacing: 0.02em;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;
+  }
+  .about-text p { color: var(--muted); margin-bottom: 1.1rem; line-height: 1.75; }
+  .about-text p strong { color: var(--text); }
+  .about-stats { display: flex; flex-direction: column; gap: 1.2rem; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.3rem 1.5rem;
+    display: flex; flex-direction: column; gap: 0.3rem;
+  }
+  .stat-card .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem; font-weight: 700; color: var(--accent);
+  }
+  .stat-card .stat-label { font-size: 0.82rem; color: var(--muted); }
+
+  /* ── PROJECT ── */
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem 2.2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .project-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 32px rgba(0,212,255,0.1);
+  }
+  .project-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+  .project-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .project-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.15rem; font-weight: 600; color: var(--white);
+  }
+  .project-period {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; color: var(--muted); white-space: nowrap;
+  }
+  .project-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.4rem; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; padding: 0.28rem 0.65rem;
+    background: var(--accent-dim); color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.25); border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .project-links { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .link-btn {
+    font-size: 0.82rem; color: var(--accent); text-decoration: none;
+    border: 1px solid var(--border); border-radius: 5px;
+    padding: 0.38rem 0.85rem; font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+  .link-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+  /* ── SKILLS ── */
+  .skills-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1.5rem; }
+  .skill-group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.5rem;
+  }
+  .skill-group-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.82rem; font-weight: 600; color: var(--accent);
+    letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .skill-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .skill-pill {
+    font-size: 0.78rem; padding: 0.25rem 0.6rem;
+    background: rgba(255,255,255,0.05); color: var(--text);
+    border-radius: 4px; border: 1px solid var(--border);
+  }
+
+  /* ── CERTIFICATIONS ── */
+  .cert-card {
+    display: flex; gap: 1.2rem; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 1.4rem 1.6rem;
+    margin-bottom: 1rem;
+  }
+  .cert-icon {
+    width: 42px; height: 42px; border-radius: 8px;
+    background: var(--accent-dim); display: flex; align-items: center;
+    justify-content: center; color: var(--accent); font-size: 1.3rem; flex-shrink: 0;
+  }
+  .cert-body { flex: 1; }
+  .cert-name { font-weight: 600; color: var(--white); font-size: 0.95rem; }
+  .cert-issuer { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+  .cert-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem;
+  }
+
+  /* ── CONTACT ── */
+  #contact { text-align: center; }
+  #contact h2 { margin-bottom: 0.8rem; }
+  #contact p { color: var(--muted); max-width: 480px; margin: 0 auto 2rem; }
+  .contact-links { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .contact-link {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.4rem; border-radius: 8px;
+    border: 1.5px solid var(--border); color: var(--text);
+    text-decoration: none; font-size: 0.875rem; font-weight: 500;
+    transition: all 0.2s; background: var(--card);
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+  .contact-link svg { width: 16px; height: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media(max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 3rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+  }
+
+  /* ── FADE-IN ANIMATIONS ── */
+  .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero" class="nav-logo">LD</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#project">Project</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">CS &amp; Information Engineering · NDHU Taiwan</div>
+    <h1>Luhlelo<br /><span>Dube</span></h1>
+    <div class="terminal-line" id="terminal-text"><span id="typed"></span><span class="cursor"></span></div>
+    <div class="hero-cta">
+      <a href="#project" class="btn btn-primary">View Project</a>
+      <a href="https://github.com/luhlelodube" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+      <a href="https://www.linkedin.com/in/luhlelo-dube-61980528b" target="_blank" rel="noopener" class="btn btn-outline">LinkedIn</a>
+    </div>
+    <div class="hero-interests">
+      <span class="interest-pill">Intelligent Systems Management</span>
+      <span class="interest-pill">AI-Driven Infrastructure</span>
+      <span class="interest-pill">Software Development</span>
+      <span class="interest-pill">Network Automation</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <h2>Building systems that think</h2>
+  <div class="about-grid">
+    <div class="about-text fade-in">
+      <p>I'm a <strong>3rd-year Computer Science &amp; Information Engineering student</strong> at National Dong Hwa University (NDHU) in Hualien, Taiwan, with a deep interest in network automation, AI-driven infrastructure, and intelligent systems management.</p>
+      <p>My coursework has taken me across a broad spectrum of CS fundamentals — from <strong>computer architecture and compilers</strong> to <strong>algorithms, formal languages, big data analytics, and machine learning</strong> — building both the theoretical grounding and the practical range to tackle complex systems problems.</p>
+      <p>Outside the classroom, I collaborated with a team of four on a self-hosted lab environment running <strong>GNS3, Proxmox, FortiGate, and Cisco networking gear</strong>, where we experiment with real-world automation, network simulation, and AI-assisted operations.</p>
+    </div>
+    <div class="about-stats fade-in">
+      <div class="stat-card">
+        <span class="stat-value">Sep 2023</span>
+        <span class="stat-label">Started B.Sc. at NDHU — expected graduation Jul 2027</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">12+</span>
+        <span class="stat-label">Technologies used in undergraduate project</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value">Hualien</span>
+        <span class="stat-label">Taiwan · Open to remote &amp; international opportunities</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECT -->
+<section id="project">
+  <div class="section-label">Featured Project</div>
+  <h2>What I've built</h2>
+
+  <div class="project-card fade-in">
+    <div class="project-header">
+      <div class="project-title">AI-Driven Network &amp; IoT Device Management Using Agentic Automation Workflows</div>
+      <div class="project-period">Sep 2025 – May 2026</div>
+    </div>
+    <p class="project-desc">
+      A four-member undergraduate research project that designed and built a platform integrating automation, network simulation, and intelligent workflow orchestration. Users interact via natural language to automate network diagnostics, device monitoring, incident reporting, and infrastructure management tasks.
+    </p>
+    <p class="project-desc">
+      Key contributions included developing <strong style="color:var(--text)">n8n-based automation workflows</strong>, integrating Netmiko, NAPALM, SNMP, and Paramiko for network management, deploying simulated enterprise environments in <strong style="color:var(--text)">GNS3</strong>, and applying AI-assisted decision-making for operational workflows — all containerized with Docker on a Proxmox hypervisor.
+    </p>
+    <div class="tag-row">
+      <span class="tag">Python</span>
+      <span class="tag">n8n</span>
+      <span class="tag">Docker</span>
+      <span class="tag">GNS3</span>
+      <span class="tag">Proxmox</span>
+      <span class="tag">Netmiko</span>
+      <span class="tag">Paramiko</span>
+      <span class="tag">NAPALM</span>
+      <span class="tag">SNMP</span>
+      <span class="tag">MQTT</span>
+      <span class="tag">Cloudflare Tunnel</span>
+      <span class="tag">Linux</span>
+    </div>
+    <div class="project-links">
+      <a href="https://github.com/hualiguide/MLAB-Project" target="_blank" rel="noopener" class="link-btn">→ GitHub Repo</a>
+      <a href="https://github.com/luhlelodube" target="_blank" rel="noopener" class="link-btn">→ Personal GitHub</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">Skills</div>
+  <h2>Tools &amp; technologies</h2>
+  <div class="skills-groups fade-in">
+    <div class="skill-group">
+      <div class="skill-group-title">Networking &amp; Infrastructure</div>
+      <div class="skill-list">
+        <span class="skill-pill">GNS3</span>
+        <span class="skill-pill">Proxmox</span>
+        <span class="skill-pill">FortiGate</span>
+        <span class="skill-pill">Cisco IOS</span>
+        <span class="skill-pill">SNMP</span>
+        <span class="skill-pill">MQTT</span>
+        <span class="skill-pill">IP Networking</span>
+        <span class="skill-pill">Wireless Networking</span>
+        <span class="skill-pill">VLANs</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Automation &amp; DevOps</div>
+      <div class="skill-list">
+        <span class="skill-pill">n8n</span>
+        <span class="skill-pill">Netmiko</span>
+        <span class="skill-pill">NAPALM</span>
+        <span class="skill-pill">Paramiko</span>
+        <span class="skill-pill">Docker</span>
+        <span class="skill-pill">Infrastructure Automation</span>
+        <span class="skill-pill">DevOps</span>
+        <span class="skill-pill">Cloudflare Tunnel</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Programming</div>
+      <div class="skill-list">
+        <span class="skill-pill">Python</span>
+        <span class="skill-pill">C++</span>
+        <span class="skill-pill">C</span>
+        <span class="skill-pill">Linux / Bash</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">AI &amp; Data</div>
+      <div class="skill-list">
+        <span class="skill-pill">Machine Learning</span>
+        <span class="skill-pill">Big Data Analytics</span>
+        <span class="skill-pill">AI Workflow Orchestration</span>
+        <span class="skill-pill">Ollama / LLMs</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Computer Science</div>
+      <div class="skill-list">
+        <span class="skill-pill">Algorithms &amp; Complexity</span>
+        <span class="skill-pill">Formal Languages</span>
+        <span class="skill-pill">Automata Theory</span>
+        <span class="skill-pill">Computer Architecture</span>
+        <span class="skill-pill">Virtualization</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">Certifications</div>
+      <div class="skill-list">
+        <span class="skill-pill">Beginning C++ — Udemy (Jul 2024)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" style="justify-content:center">Contact</div>
+  <h2>Let's connect</h2>
+  <p>I'm open to research collaborations, internships, and conversations about network automation and AI systems. Reach out anytime.</p>
+  <div class="contact-links">
+    <a href="mailto:luhlelodube@gmail.com" class="contact-link">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      luhlelodube@gmail.com
+    </a>
+    <a href="https://www.linkedin.com/in/luhlelo-dube-61980528b" target="_blank" rel="noopener" class="contact-link">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      LinkedIn
+    </a>
+    <a href="https://github.com/luhlelodube" target="_blank" rel="noopener" class="contact-link">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      GitHub
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span style="color:var(--accent)">~/</span> Luhlelo Dube · NDHU · Hualien, Taiwan · <span id="year"></span>
+</footer>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Terminal typing effect
+  const phrases = [
+    'automating networks with Python + n8n',
+    'exploring intelligent systems management',
+    'building AI-driven infrastructure',
+    'developing software that scales',
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typed');
+  function type() {
+    const word = phrases[pi];
+    if (!deleting) {
+      el.textContent = word.slice(0, ++ci);
+      if (ci === word.length) { deleting = true; setTimeout(type, 2000); return; }
+    } else {
+      el.textContent = word.slice(0, --ci);
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; }
+    }
+    setTimeout(type, deleting ? 40 : 75);
+  }
+  type();
+
+  // Fade-in on scroll
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
